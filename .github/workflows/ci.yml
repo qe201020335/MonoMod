@@ -79,6 +79,8 @@ jobs:
       if: steps.skip_check.outputs.should_skip != 'true'
       id: compute-matrix
       run: dotnet run --project ./build/gen-test-matrix/gen-test-matrix.csproj -c Release -- "${{ github.repository_owner }}" $env:GITHUB_OUTPUT matrix
+
+    - run: echo "${{ steps.compute-matrix.outputs.matrix }}"
   
   build-testassets:
     needs: setup
@@ -100,8 +102,6 @@ jobs:
         include:
         - os: windows-latest
           name: Windows
-        - os: macos-latest
-          name: MacOS
           
     name: 'Build #${{ needs.setup.outputs.ver }} (${{ matrix.name }})'
     uses: ./.github/workflows/build.yml

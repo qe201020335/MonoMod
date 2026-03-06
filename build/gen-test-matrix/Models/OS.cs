@@ -31,6 +31,19 @@ internal sealed record OS : Enableable
     public static readonly ImmutableArray<OS> OperatingSystems = [
         new()
         {
+            Name = "Windows",
+            Runner = "windows-latest",
+            HasFramework = true,
+            RidName = "win",
+            UnityDllName = "mono-2.0-bdwgc",
+            DllSuffix = ".dll",
+
+            Arch = [
+                new() { RidName = "x64", UnityName = "win64", IsRunnerArch = true },
+            ]
+        },
+        new()
+        {
             Name = "Linux",
             Runner = "ubuntu-latest",
             UseContainer = true,
