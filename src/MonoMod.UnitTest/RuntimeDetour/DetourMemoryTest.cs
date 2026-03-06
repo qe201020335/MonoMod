@@ -36,32 +36,36 @@ namespace MonoMod.UnitTest
             var memPre = GC.GetTotalMemory(true);
             long memPost;
 
-            try
+            for (var k = 0; k < 128; k++)
             {
-
-                Console.WriteLine($"GC.GetTotalMemory before detour memory test: {memPre}");
-                for (var i = 0; i < 256; i++)
+                try
                 {
-                    var h = new Hook(
-                        typeof(DetourMemoryTest).GetMethod("TestStaticMethod", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic),
-                        typeof(DetourMemoryTest).GetMethod("TestStaticMethodHook", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
-                    );
-                    hooks.Add(h);
-                    var staticResult = TestStaticMethod(2, 3).Count;
-                    Assert.Equal(6 + 1 + i, staticResult);
+
+                    Console.WriteLine($"GC.GetTotalMemory before detour memory test: {memPre}");
+                    for (var i = 0; i < 256; i++)
+                    {
+                        var h = new Hook(
+                            typeof(DetourMemoryTest).GetMethod("TestStaticMethod", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic),
+                            typeof(DetourMemoryTest).GetMethod("TestStaticMethodHook", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.NonPublic)
+                        );
+                        hooks.Add(h);
+                        var staticResult = TestStaticMethod(2, 3).Count;
+                        Assert.Equal(6 + 1 + i, staticResult);
+                    }
+
+                    memPost = GC.GetTotalMemory(true);
+                    Console.WriteLine($"GC.GetTotalMemory after detour memory test: {memPost}");
+                    Console.WriteLine($"After - Before: {memPost - memPre}");
+
                 }
-
-                memPost = GC.GetTotalMemory(true);
-                Console.WriteLine($"GC.GetTotalMemory after detour memory test: {memPost}");
-                Console.WriteLine($"After - Before: {memPost - memPre}");
-
+                finally
+                {
+                    foreach (var h in hooks)
+                        h.Dispose();
+                    hooks.Clear();
+                }
             }
-            finally
-            {
-                foreach (var h in hooks)
-                    h.Dispose();
-                hooks.Clear();
-            }
+            
 
             GC.Collect();
             var memClear = GC.GetTotalMemory(true);
