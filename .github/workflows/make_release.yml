@@ -197,7 +197,7 @@ jobs:
         
     # we need to download the packages we just generated so that this subsequent restore doesn't fail PackageDownloading the new version
     - name: Download compiled packages
-      uses: actions/download-artifact@v7
+      uses: actions/download-artifact@v4
       with:
         name: packages
         path: artifacts/package/release/
