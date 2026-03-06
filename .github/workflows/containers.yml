@@ -1,5 +1,6 @@
 name: Build Docker containers
 on:
+  workflow_dispatch:
   push:
     paths:
       - 'build/containers/*.dockerfile'
